@@ -1,0 +1,43 @@
+- name: "Testing Ansible"
+  hosts: vagrant_vms
+  gather_facts: no
+  # remote_user: vagrant
+
+  become: yes
+  # become_user: root
+
+  tasks:
+    - name: "Check if zabbix-release is installed"
+      package_facts:
+        manager: "auto"
+
+    # This is what installing zabbix-release.deb is essentially doing
+    # - name: "Add zabbix repo deb"
+    #   apt_repository:
+    #     repo: "deb https://repo.zabbix.com/zabbix/4.0/ubuntu bionic main"
+
+    # - name: "Add zabbix repo deb-src"
+    #   apt_repository:
+    #     repo: "deb-src https://repo.zabbix.com/zabbix/4.0/ubuntu bionic main"
+    #     update_cache: yes
+
+    - name: "Download zabbix repo"
+      uri:
+        url: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb
+        dest: /tmp/zabbix-release_5.0-1+bionic_all.deb
+      when: "'zabbix-release' not in ansible_facts.packages"
+
+    - name: "Add zabbix repo"
+      apt:
+        deb: /tmp/zabbix-release_5.0-1+bionic_all.deb
+        state: present
+
+    - name: "Install zabbix server, frontend, agent packages"
+      apt:
+        name:
+          - zabbix-server-mysql
+          - zabbix-frontend-php
+          - zabbix-apache-conf
+          - zabbix-agent
+        update_cache: yes
+        state: present

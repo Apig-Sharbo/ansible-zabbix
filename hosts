@@ -1,0 +1,7 @@
+[vagrant_vms]
+192.168.0.23
+
+# [vagrant_vms:vars]
+# ansible_port=22
+# ansible_ssh_user=vagrant
+# ansible_ssh_private_key_file=/home/jargonin/vagrant-images/ubuntu-bionic-zabbix/.vagrant/machines/default/virtualbox/private_key
